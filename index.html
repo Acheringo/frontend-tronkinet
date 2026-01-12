@@ -74,7 +74,7 @@
                 let botonSeguir = "";
                 let avatarHTML="";
                 if (post.foto_perfil) {
-                    avatarHTML = `<img src="${API_URL}/uploads/${post.foto_perfil}" class="w-10 h-10 rounded-full object-cover">`;
+                    avatarHTML = `<img src="${API_URL}/${post.foto_perfil}" class="w-10 h-10 rounded-full object-cover">`;
                 } else {
                     const inicial = post.username[0].toUpperCase();
                     avatarHTML = `

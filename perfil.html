@@ -96,7 +96,7 @@
                 
                 if (data.foto_perfil) {
                     // Importante: La URL debe apuntar al servidor FastAPI
-                    avatarImg.src = `${API_URL}/uploads/${data.foto_perfil}`;
+                    avatarImg.src = `${API_URL}/${data.foto_perfil}`;
                     avatarImg.classList.remove('hidden');
                     avatarLetra.classList.add('hidden');
                 } else {
