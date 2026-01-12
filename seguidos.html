@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Siguiendo - Mini Twitter</title>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-white shadow mb-6">
+        <div class="max-w-2xl mx-auto flex justify-around p-4">
+            <a href="index.html" class="font-bold text-gray-600">Global</a>
+            <a href="seguidos.html" class="font-bold text-blue-500">Siguiendo</a>
+            <a href="perfil.html" class="font-bold text-gray-600">Tú (<b id="display-username" class="font-bold text-gray-600"></b>)</a>
+            <button onclick="logout()" class="text-red-500">Salir</button>
+        </div>
+    </nav>
+
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Posts de gente que sigues</h1>
+        <div id="feed-seguidos" class="space-y-4">
+            </div>
+    </div>
+
+    <script>
+        const API_URL = "https://collins-otherwise-investigate-tony.trycloudflare.com";
+        const myId = localStorage.getItem('userId');
+        if (!myId) window.location.href = "login.html";
+
+        async function cargarFeedSeguidos() {
+            const res = await fetch(`${API_URL}/feed-seguidos/${myId}`, {
+                headers: {
+                    'ngrok-skip-browser-warning': 'true'
+                }
+            });
+            const resultado = await res.json();
+            const feed = document.getElementById('feed-seguidos');
+            
+            if (resultado.data.length === 0) {
+                feed.innerHTML = `
+                    <div class="text-center p-10 bg-white rounded-lg shadow">
+                        <p class="text-gray-500">Aún no sigues a nadie o tus amigos no han posteado nada.</p>
+                        <a href="index.html" class="text-blue-500 underline mt-2 block">¡Busca a alguien en el feed global!</a>
+                    </div>`;
+                return;
+            }
+
+            feed.innerHTML = '';
+            resultado.data.forEach(post => {
+                feed.innerHTML += `
+                    <div class="bg-white p-4 rounded-lg shadow border-b">
+                        <span class="font-bold text-blue-600">@${post.username}</span>
+                        <p class="text-gray-800 mt-2">${post.content}</p>
+                        <div class="flex items-center mt-3 text-xs text-gray-400">
+                            <span>${post.create_time}</span>
+                            <span class="ml-4">❤️ ${post.total_likes} likes</span>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        const nombreUsuario = localStorage.getItem('username');
+        document.getElementById('display-username').innerText = nombreUsuario;
+        function logout() { localStorage.clear(); window.location.href = "login.html"; }
+        window.onload = cargarFeedSeguidos;
+    </script>
+</body>
+</html>

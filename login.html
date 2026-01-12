@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://collins-otherwise-investigate-tony.trycloudflare.com"></script>
+    <title>Acceso - Mini Twitter</title>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-xl w-96">
+        <h1 class="text-2xl font-bold text-blue-500 mb-6 text-center">Bienvenido</h1>
+        
+        <div id="login-box">
+            <input id="logUser" type="text" placeholder="Usuario" class="w-full p-2 border rounded mb-3">
+            <input id="logPass" type="password" placeholder="Contraseña" class="w-full p-2 border rounded mb-4">
+            <button onclick="ejecutarLogin()" class="w-full bg-blue-500 text-white py-2 rounded font-bold hover:bg-blue-600">Entrar</button>
+            <p class="text-sm mt-4 text-center">¿No tienes cuenta? <a href="#" onclick="switchBox()" class="text-blue-500">Regístrate</a></p>
+        </div>
+
+        <div id="signup-box" class="hidden">
+            <input id="regUser" type="text" placeholder="Nuevo Usuario" class="w-full p-2 border rounded mb-3">
+            <input id="regEmail" type="email" placeholder="Email" class="w-full p-2 border rounded mb-3">
+            <input id="regPass" type="password" placeholder="Contraseña" class="w-full p-2 border rounded mb-4">
+            <button onclick="ejecutarRegistro()" class="w-full bg-green-500 text-white py-2 rounded font-bold hover:bg-green-600">Crear Cuenta</button>
+            <p class="text-sm mt-4 text-center">¿Ya tienes cuenta? <a href="#" onclick="switchBox()" class="text-blue-500">Inicia sesión</a></p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://c9e1eb160b40.ngrok-free.app";
+
+        function switchBox() {
+            document.getElementById('login-box').classList.toggle('hidden');
+            document.getElementById('signup-box').classList.toggle('hidden');
+        }
+
+        async function ejecutarLogin() {
+            const username = document.getElementById('logUser').value;
+            const password = document.getElementById('logPass').value;
+
+            const res = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                 },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+            if (data.error) {
+                alert(data.error);
+            } else {
+                // GUARDAR SESIÓN: Como un std::map persistente en el navegador
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userId', data.user_id);
+                localStorage.setItem('username', data.username);
+                window.location.href = "index.html"; // Redirigir
+            }
+        }
+
+        async function ejecutarRegistro() {
+            const username = document.getElementById('regUser').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPass').value;
+
+            const res = await fetch(`${API_URL}/registro`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                 },
+                body: JSON.stringify({ username, email, password })
+            });
+
+            const data = await res.json();
+            if (data.error) alert(data.error);
+            else { alert("¡Cuenta creada! Ya puedes loguearte."); switchBox(); }
+        }
+    </script>
+</body>
+</html>
